@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Formula from "./Formula";
 import Status from "./Status";
 import KeyPad from "./KeyPad";
+import Chat from './Chat';
 import SpreadSheetClient from "../Engine/SpreadSheetClient";
 import SheetHolder from "./SheetHolder";
 
@@ -201,6 +202,7 @@ function SpreadSheet({ documentName, spreadSheetClient }: SpreadSheetProps) {
         onCommandButtonClick={onCommandButtonClick}
         currentlyEditing={currentlyEditing}></KeyPad>
       <ServerSelector serverSelector={serverSelector} serverSelected={serverSelected} />
+      <Chat userName={userName} />
     </div>
   )
 };
