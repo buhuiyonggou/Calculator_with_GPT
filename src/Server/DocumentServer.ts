@@ -30,6 +30,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import { DocumentHolder } from '../Engine/DocumentHolder';
+import { ChatManager } from '../Engine/ChatManager';
 import { PortsGlobal } from '../ServerDataDefinitions';
 
 // define a debug flag to turn on debugging
@@ -63,6 +64,7 @@ app.use((req, res, next) => {
 
 
 const documentHolder = new DocumentHolder();
+const chatManager = new ChatManager();
 
 // GET /documents
 app.get('/documents', (req: express.Request, res: express.Response) => {
@@ -265,6 +267,25 @@ app.put('/document/clear/formula/:name', (req: express.Request, res: express.Res
     const resultJSON = documentHolder.clearFormula(name, userName);
 
     res.status(200).send(resultJSON);
+});
+
+// GET /chat/:documentName - Fetch latest chat messages
+app.get('/chat/:documentName', (req, res) => {
+    const documentName = req.params.documentName;
+    const recentMessages = chatManager.getMessages(documentName).slice(-20);
+    res.json(recentMessages);
+});
+
+app.post('/chat/:documentName', (req, res) => {
+    const documentName = req.params.documentName;
+    const { user, message } = req.body;
+
+    if (!user || !message) {
+        return res.status(400).send('User and message are required');
+    }
+
+    chatManager.addMessage(documentName, user, message);
+    res.status(200).send('Message added successfully');
 });
 
 // get the port we should be using

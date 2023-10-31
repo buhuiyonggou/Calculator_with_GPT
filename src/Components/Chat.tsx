@@ -3,6 +3,8 @@ import './Chat.css';
 
 interface ChatProps {
   userName: string;
+  documentName: string;  // Assuming you need this to identify the chat room
+  baseURL: string;
 }
 
 interface Message {
@@ -10,30 +12,53 @@ interface Message {
   message: string;
 }
 
-const Chat: React.FC<ChatProps> = ({ userName }) => {
+const Chat: React.FC<ChatProps> = ({ userName, documentName, baseURL }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState('');
 
-  const fetchMessages = (): Message[] => {
-    // Replace with real fetching code later
-    return [
-      { user: 'Alice', message: 'Hello!' },
-      { user: 'Bob', message: 'Hi there!' },
-      // ... other messages
-    ];
+  // Fetch messages from the server
+  const fetchMessages = async () => {
+    try {
+      const response = await fetch(`${baseURL}/chat/${documentName}`);
+      if (response.ok) {
+        const fetchedMessages = await response.json();
+        setMessages(fetchedMessages);
+      } else {
+        console.error('Failed to fetch messages');
+      }
+    } catch (error) {
+      console.error('Error fetching messages:', error);
+    }
   };
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      const fetchedMessages = fetchMessages();
-      setMessages(fetchedMessages.slice(-20));
-    }, 1000);
+    fetchMessages();
+    const interval = setInterval(fetchMessages, 1000);
     return () => clearInterval(interval);
-  }, []);
+  }, [documentName]);  // Ensure effect runs again if documentName changes
 
-  const handleSendMessage = () => {
-    // Replace with real sending message code later
-    setNewMessage(''); // Reset input after sending
+  // Handle sending a new message
+  const handleSendMessage = async () => {
+    if (!newMessage.trim()) return; // Avoid sending empty messages
+
+    try {
+      const response = await fetch(`${baseURL}/chat/${documentName}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ user: userName, message: newMessage }),
+      });
+
+      if (response.ok) {
+        setNewMessage('');
+        fetchMessages(); // Fetch latest messages including the new one
+      } else {
+        console.error('Failed to send message');
+      }
+    } catch (error) {
+      console.error('Error sending message:', error);
+    }
   };
 
   return (

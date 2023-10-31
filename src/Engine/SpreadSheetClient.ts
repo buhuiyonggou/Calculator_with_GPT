@@ -159,6 +159,10 @@ class SpreadSheetClient {
         return this._documentList;
     }
 
+    // added a getter for baseURL
+    public get baseURL(): string {
+        return this._baseURL;
+    }
 
     // Interim solution for pushing the editing data through to the GUI
     // we will add a | to each cell value and we will then add the name of 

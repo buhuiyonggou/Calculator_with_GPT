@@ -202,7 +202,11 @@ function SpreadSheet({ documentName, spreadSheetClient }: SpreadSheetProps) {
         onCommandButtonClick={onCommandButtonClick}
         currentlyEditing={currentlyEditing}></KeyPad>
       <ServerSelector serverSelector={serverSelector} serverSelected={serverSelected} />
-      <Chat userName={userName} />
+      <Chat
+        userName={userName}
+        documentName={documentName}
+        baseURL={spreadSheetClient.baseURL}
+      />
     </div>
   )
 };
