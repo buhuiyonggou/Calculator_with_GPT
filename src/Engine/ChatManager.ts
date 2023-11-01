@@ -17,7 +17,13 @@ export class ChatManager {
         this.chatMessages.get(documentName)?.push(chatMessage);
     }
 
-    getMessages(documentName: string): Array<{ user: string; message: string; timestamp: string }> {
-        return this.chatMessages.get(documentName) || [];
+    getMessages(documentName: string, page: number, pageSize: number) {
+        const messages = this.chatMessages.get(documentName) || [];
+        // Sort messages by timestamp in descending order
+        messages.sort((a, b) => b.timestamp.localeCompare(a.timestamp));
+        // Calculate starting index for the requested page
+        const start = page * pageSize;
+        return messages.slice(start, start + pageSize);
     }
+
 }

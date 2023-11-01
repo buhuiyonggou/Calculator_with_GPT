@@ -3,7 +3,7 @@ import './Chat.css';
 
 interface ChatProps {
   userName: string;
-  documentName: string;  // Assuming you need this to identify the chat room
+  documentName: string;  // Used to identify the chat room
   baseURL: string;
 }
 
@@ -15,27 +15,49 @@ interface Message {
 const Chat: React.FC<ChatProps> = ({ userName, documentName, baseURL }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState('');
+  const [page, setPage] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+  const [isFetchingMore, setIsFetchingMore] = useState(false);
 
   // Fetch messages from the server
-  const fetchMessages = async () => {
+  const fetchMessages = async (newPage: number) => {
     try {
-      const response = await fetch(`${baseURL}/chat/${documentName}`);
+      const response = await fetch(`${baseURL}/chat/${documentName}?page=${newPage}&pageSize=20`);
       if (response.ok) {
         const fetchedMessages = await response.json();
-        setMessages(fetchedMessages);
+        if (newPage === 0) {
+          setMessages(fetchedMessages.reverse());
+        } else {
+          // Insert new messages at the beginning of the current message list, keeping them in reverse order (i.e., newest at the top)
+          setMessages(prevMessages => [...[...fetchedMessages].reverse(), ...prevMessages]);
+        }
+        // Check if there are more messages
+        if (fetchedMessages.length < 20) {
+          setHasMore(false);
+        }
+        return fetchedMessages;
       } else {
         console.error('Failed to fetch messages');
       }
     } catch (error) {
       console.error('Error fetching messages:', error);
     }
+    return []; // Return an empty array in case of an error
   };
 
+  // Polling for new messages
   useEffect(() => {
-    fetchMessages();
-    const interval = setInterval(fetchMessages, 1000);
-    return () => clearInterval(interval);
-  }, [documentName]);  // Ensure effect runs again if documentName changes
+    let intervalId: NodeJS.Timeout;
+    if (!isFetchingMore) {
+      intervalId = setInterval(() => {
+        fetchMessages(0);
+      }, 2000); // Adjust polling interval
+    }
+
+    return () => {
+      if (intervalId) clearInterval(intervalId);
+    };
+  }, [documentName, isFetchingMore]);
 
   // Handle sending a new message
   const handleSendMessage = async () => {
@@ -52,7 +74,8 @@ const Chat: React.FC<ChatProps> = ({ userName, documentName, baseURL }) => {
 
       if (response.ok) {
         setNewMessage('');
-        fetchMessages(); // Fetch latest messages including the new one
+        setPage(0);
+        fetchMessages(0);
       } else {
         console.error('Failed to send message');
       }
@@ -61,8 +84,40 @@ const Chat: React.FC<ChatProps> = ({ userName, documentName, baseURL }) => {
     }
   };
 
+  // Load more messages
+  const loadMoreMessages = async () => {
+    if (hasMore) {
+      setIsFetchingMore(true);
+      const nextPage = page + 1;
+      const currentMessages = await fetchMessages(nextPage);
+      if (currentMessages.length < 20) {
+        setHasMore(false);
+        // Set a delay to restore the original text
+        setTimeout(() => {
+          setHasMore(true); // Restore hasMore state so the button can be clicked again
+        }, 1000); // Restore after 2 seconds
+      }
+      setPage(nextPage);
+    }
+  };
+
+  // Exit load more messages mode and resume polling
+  const exitLoadMoreMode = () => {
+    setIsFetchingMore(false);
+    // No need to change hasMore or page as user may click "Load More" again
+    setPage(0);
+  };
+
   return (
     <div className="chat-container">
+      <button onClick={loadMoreMessages} disabled={!hasMore}>
+        {hasMore ? 'Load More Messages' : 'No More Messages'}
+      </button>
+      {isFetchingMore && (
+        <button onClick={exitLoadMoreMode}>
+          Exit Load More Mode
+        </button>
+      )}
       <div className="chat-messages">
         {messages.map((msg, index) => (
           <div key={index} className={msg.user === userName ? 'my-message' : 'other-message'}>

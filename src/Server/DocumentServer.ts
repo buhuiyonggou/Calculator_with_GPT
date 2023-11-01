@@ -269,11 +269,22 @@ app.put('/document/clear/formula/:name', (req: express.Request, res: express.Res
     res.status(200).send(resultJSON);
 });
 
-// GET /chat/:documentName - Fetch latest chat messages
+// GET /chat/:documentName - Fetch paged messages
 app.get('/chat/:documentName', (req, res) => {
     const documentName = req.params.documentName;
-    const recentMessages = chatManager.getMessages(documentName).slice(-20);
-    res.json(recentMessages);
+    let page = 0;
+    let pageSize = 20;
+
+    if (typeof req.query.page === 'string') {
+        page = parseInt(req.query.page);
+    }
+
+    if (typeof req.query.pageSize === 'string') {
+        pageSize = parseInt(req.query.pageSize);
+    }
+
+    const pagedMessages = chatManager.getMessages(documentName, page, pageSize);
+    res.json(pagedMessages);
 });
 
 app.post('/chat/:documentName', (req, res) => {
