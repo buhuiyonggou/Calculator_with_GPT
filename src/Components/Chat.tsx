@@ -31,10 +31,6 @@ const Chat: React.FC<ChatProps> = ({ userName, documentName, baseURL }) => {
           // Insert new messages at the beginning of the current message list, keeping them in reverse order (i.e., newest at the top)
           setMessages(prevMessages => [...[...fetchedMessages].reverse(), ...prevMessages]);
         }
-        // Check if there are more messages
-        if (fetchedMessages.length < 20) {
-          setHasMore(false);
-        }
         return fetchedMessages;
       } else {
         console.error('Failed to fetch messages');
