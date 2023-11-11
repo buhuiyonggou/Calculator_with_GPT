@@ -1,15 +1,15 @@
-import SheetMemory from "./SheetMemory"
-import FormulaEvaluator from "./NewFormulaEvaluator"
-import CalculationManager from "./CalculationManager"
+import SheetMemory from "./SheetMemory";
+import FormulaEvaluator from "./NewFormulaEvaluator";
+import CalculationManager from "./CalculationManager";
 import FormulaBuilder from "./FormulaBuilder";
 import Cell from "./Cell";
 import { ContributingUser } from "./ContributingUser";
 
 /**
  *  The main controller of the SpreadSheet
- * 
+ *
  * functions exported are
- * 
+ *
  * addToken(token:string):  void
  * addCell(cell:string): void
  * removeToken(): void
@@ -23,8 +23,8 @@ import { ContributingUser } from "./ContributingUser";
  * getEditStatus(): boolean
  * setEditStatus(bool:boolean): void
  * getEditStatusString(): string
- * 
- * 
+ *
+ *
  *
  */
 export class SpreadSheetController {
@@ -33,20 +33,20 @@ export class SpreadSheetController {
 
   /** the local storage for the document */
 
-
-
   /** the users who are editing this sheet */
 
-  private _contributingUsers: Map<string, ContributingUser> = new Map<string, ContributingUser>();
+  private _contributingUsers: Map<string, ContributingUser> = new Map<
+    string,
+    ContributingUser
+  >();
   private _cellsBeingEdited: Map<string, string> = new Map<string, string>();
-
 
   // The dependency manager, this is used to manage the dependencies between cells
   // The main job of this is to compute the order in which the cells should be evaluated
   private _calculationManager: CalculationManager;
 
   // a per access error message
-  private _errorOccurred: string = '';
+  private _errorOccurred: string = "";
 
   /**
    * constructor
@@ -61,8 +61,7 @@ export class SpreadSheetController {
     let userData: ContributingUser;
 
     if (!this._contributingUsers.has(user)) {
-      userData = new ContributingUser(cellLabel)
-
+      userData = new ContributingUser(cellLabel);
     } else {
       userData = this._contributingUsers.get(user)!;
       userData.cellLabel = cellLabel;
@@ -71,17 +70,19 @@ export class SpreadSheetController {
     this.releaseEditAccess(user);
     userData.isEditing = false;
     this._contributingUsers.set(user, userData);
-    userData.formulaBuilder.setFormula(this._memory.getCellByLabel(cellLabel).getFormula());
+    userData.formulaBuilder.setFormula(
+      this._memory.getCellByLabel(cellLabel).getFormula()
+    );
   }
 
-
-
   requestEditAccess(user: string, cellLabel: string): boolean {
-    this._errorOccurred = '';
+    this._errorOccurred = "";
 
     // is the user a contributingUser for this document. // this is for testing
     if (!this._contributingUsers.has(user)) {
-      throw new Error('User is not a contributing user, this should not happen for a request to edit');
+      throw new Error(
+        "User is not a contributing user, this should not happen for a request to edit"
+      );
     }
 
     // now we know that the user is a viewer for sure and this line will succeed
@@ -114,15 +115,14 @@ export class SpreadSheetController {
     return false;
   }
 
-
-
   releaseEditAccess(user: string): void {
     // if the user is not editing a cell then we are done
     if (!this._contributingUsers.get(user)?.isEditing) {
       return;
     }
 
-    const editingCell: string | undefined = this._contributingUsers.get(user)?.cellLabel;
+    const editingCell: string | undefined =
+      this._contributingUsers.get(user)?.cellLabel;
     if (editingCell) {
       if (this._cellsBeingEdited.has(editingCell)) {
         this._cellsBeingEdited.delete(editingCell);
@@ -131,18 +131,16 @@ export class SpreadSheetController {
 
     // // remove the user from the list of users
     // this._contributingUsers.delete(user);
-
   }
 
-
-  /**  
+  /**
    *  add token to current formula, this is not a cell and thus no dependency updating is needed
-   * 
+   *
    * @param token:string
-   * 
+   *
    * if the token is a valid cell label add it to the formula
-   * 
-   * 
+   *
+   *
    */
   addToken(token: string, user: string): void {
     // is the user editing a cell
@@ -153,8 +151,15 @@ export class SpreadSheetController {
 
     // add the token to the formula
     userData.formulaBuilder.addToken(token);
-    let cellBeingEdited = this._contributingUsers.get(user)?.cellLabel;
 
+    // Check for error in FormulaBuilder
+    const errorMessage = userData.formulaBuilder.getLastError();
+    if (errorMessage) {
+      this._errorOccurred = errorMessage;
+      // Handle the error as needed (e.g., send it to the front-end)
+    }
+
+    let cellBeingEdited = this._contributingUsers.get(user)?.cellLabel;
 
     let cell = this._memory.getCellByLabel(cellBeingEdited!);
     cell.setFormula(userData.formulaBuilder.getFormula());
@@ -163,21 +168,20 @@ export class SpreadSheetController {
     this._calculationManager.evaluateSheet(this._memory);
   }
 
-  /**  
+  /**
    *  add cell reference to current formula
-   * 
+   *
    * @param cell:string
    * returns true if the token was added to the formula
    * returns false if a circular dependency is detected.
-   * 
+   *
    * Assuming that the dependents have been updated
    * we will look at the dependsOn array for the cell being inserted
    * if the current cell is in the dependsOn array then we have a circular referenceoutloo
    */
   addCell(cellReference: string, user: string): void {
-
     // is the user editing a cell
-    const userEditing = this._contributingUsers.get(user)
+    const userEditing = this._contributingUsers.get(user);
 
     // If the user is not editing then we are done
     if (!userEditing!.isEditing) {
@@ -190,12 +194,16 @@ export class SpreadSheetController {
     }
 
     // add the cell reference to the formula
-    let currentCell: Cell = this._memory.getCellByLabel(userEditing!.cellLabel)
+    let currentCell: Cell = this._memory.getCellByLabel(userEditing!.cellLabel);
     let currentLabel = userEditing!.cellLabel;
 
     // Check to see if we would be introducing a circular dependency
     // this function will update the dependency for the cell being inserted
-    let okToAdd = this._calculationManager.okToAddNewDependency(currentLabel, cellReference, this._memory);
+    let okToAdd = this._calculationManager.okToAddNewDependency(
+      currentLabel,
+      cellReference,
+      this._memory
+    );
 
     // We have checked to see if this new token introduces a circular dependency
     // if it does not then we can add the token to the formula
@@ -204,14 +212,11 @@ export class SpreadSheetController {
     }
   }
 
-
-
   /**
-   * 
+   *
    * remove the last token from the current formula
-   * 
+   *
    */
-
 
   removeToken(user: string): void {
     const userEditing = this._contributingUsers.get(user);
@@ -231,12 +236,11 @@ export class SpreadSheetController {
   }
 
   /**
-   * 
-   * clear the current formula only the owner can 
-   * 
+   *
+   * clear the current formula only the owner can
+   *
    */
   clearFormula(user: string): void {
-
     const userEditing = this._contributingUsers.get(user);
     if (!userEditing || !userEditing!.isEditing) {
       return;
@@ -255,13 +259,13 @@ export class SpreadSheetController {
   }
 
   /**
-   * 
-   * get the formula string for the user.  
-   * 
+   *
+   * get the formula string for the user.
+   *
    * The formula string is the cell that the user is editing or watching
-   * 
+   *
    * @param user:string
-   * 
+   *
    * @returns the formula as a string
    */
   getFormulaStringForUser(user: string): string {
@@ -277,9 +281,9 @@ export class SpreadSheetController {
 
   /**
    * Get the result string for the user
-   * 
+   *
    * @param user:string
-   * 
+   *
    * @returns the formula as a value:string
    */
   getResultStringForUser(user: string): string {
@@ -291,25 +295,22 @@ export class SpreadSheetController {
     return displayString;
   }
 
-
   /**
    * get the current cell label
-   * 
+   *
    * @returns the current cell label
-   * 
+   *
    */
   getWorkingCellLabel(user: string): string {
     const userEditing = this._contributingUsers.get(user);
 
     return userEditing!.cellLabel;
-
   }
 
-
   /**
-   * 
-   * @param user 
-   * @returns 
+   *
+   * @param user
+   * @returns
    */
   public documentContainer(user: string): any {
     // get the current formula for the cell of this user
@@ -317,7 +318,7 @@ export class SpreadSheetController {
 
     // if the user is not a contributing user we request view access to A1
     if (!this._contributingUsers.has(user)) {
-      this.requestViewAccess(user, 'A1');
+      this.requestViewAccess(user, "A1");
     }
     let userData = this._contributingUsers.get(user)!;
     let cellFocused = userData.cellLabel;
@@ -329,15 +330,15 @@ export class SpreadSheetController {
     // add the error message if there is one
     container.errorOccurred = this._errorOccurred;
     // reset the error since we only report it once
-    this._errorOccurred = '';
+    this._errorOccurred = "";
 
     container.contributingUsers = [];
     this._contributingUsers.forEach((value: ContributingUser, key: string) => {
       let user = {
         user: key,
         cell: value.cellLabel,
-        isEditing: value.isEditing
-      }
+        isEditing: value.isEditing,
+      };
       if (value.isEditing) {
         container.contributingUsers.push(user);
       }
