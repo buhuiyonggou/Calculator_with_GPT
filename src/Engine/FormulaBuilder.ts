@@ -19,7 +19,6 @@ export class FormulaBuilder {
   private formula: FormulaType = [];
   // define the max length of the formula
   private readonly maxFormulaLength: number = 25;
-  private readonly maxNonNumericTokens: number = 5;
   private _lastErrorMessage: string = "";
 
   constructor() {
@@ -46,18 +45,18 @@ export class FormulaBuilder {
     }
   }
 
-  private formulaLengthWithNewToken(newToken: TokenType): number {
+  private formulaLengthWithNewToken(): number {
     // This needs to be implemented according to how you calculate the length
     // For example, if each token is a string, you can just sum up the lengths
-    return this.formula.reduce(
-      (length, token) => length + token.length,
-      newToken.length
-    );
-  }
-
-  // Method to count non-numeric tokens in the formula
-  private countNonNumericTokens(): number {
-    return this.formula.filter((token) => isNaN(Number(token))).length;
+    let tempLength = 0;
+    for (const token of this.formula) {
+      if (isNaN(Number(token)) && token !== ".") {
+        tempLength += token.length + 2;
+      } else {
+        tempLength += token.length;
+      }
+    }
+    return tempLength;
   }
 
   // get error message
@@ -80,19 +79,14 @@ export class FormulaBuilder {
   addToken(token: TokenType): void {
     let lastTokenUpdated = false;
     let ignoringToken = false;
-    // Check non-numeric token count
     if (
-      isNaN(Number(token)) &&
-      this.countNonNumericTokens() >= this.maxNonNumericTokens
+      this.formulaLengthWithNewToken() + token.length >
+      this.maxFormulaLength
     ) {
-      this._lastErrorMessage = "Too many non-numeric tokens.";
-      return;
-    }
-    // Check if adding the new token exceeds the maximum formula length
-    if (this.formulaLengthWithNewToken(token) > this.maxFormulaLength) {
       // Here you can handle the scenario when the formula is too long
       // For example, you can ignore the new token or display an error message
-      this._lastErrorMessage = "Formula is too long.";
+      this._lastErrorMessage =
+        "You have excceeded the maximum length of formula.";
       return;
     }
 
@@ -172,10 +166,7 @@ export class FormulaBuilder {
       this.formula.pop();
     }
     // Re-evaluate conditions and reset error message if conditions are no longer violated
-    if (
-      this.formula.length <= this.maxFormulaLength &&
-      this.countNonNumericTokens() <= this.maxNonNumericTokens
-    ) {
+    if (this.formulaLengthWithNewToken() <= this.maxFormulaLength) {
       this._lastErrorMessage = "";
     }
   }
