@@ -53,7 +53,11 @@ function SheetComponent({ cellsValues, onClick, currentCell, currentlyEditing }:
   }
   function getCellEditor(cell: string) {
     // split on | return the second part
-    return cell.split("|")[1];
+    let editorForShort = cell.split("|")[1];
+    if (editorForShort.length >= 15) { 
+      editorForShort = editorForShort.substring(0, 15) + '...';
+    }
+    return editorForShort;
   }
 
   return (
