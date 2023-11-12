@@ -18,7 +18,7 @@ export class FormulaBuilder {
   // the current formula
   private formula: FormulaType = [];
   // define the max length of the formula
-  private readonly maxFormulaLength: number = 25;
+  private readonly maxFormulaLength: number = 100;
   private _lastErrorMessage: string = "";
 
   constructor() {
@@ -85,8 +85,7 @@ export class FormulaBuilder {
     ) {
       // Here you can handle the scenario when the formula is too long
       // For example, you can ignore the new token or display an error message
-      this._lastErrorMessage =
-        "You have excceeded the maximum length of formula.";
+      this._lastErrorMessage = "Please limit your formula into 100 words.";
       return;
     }
 
