@@ -16,8 +16,22 @@ interface SheetComponentProps {
   currentlyEditing: boolean;
 } // interface SheetComponentProps
 
-
-
+export function getCellValue(cell: string) {
+  // split on | return the first part
+  let cellForShort = cell.split("|")[0];
+  if (cellForShort.length >= 10) { 
+    cellForShort = cellForShort.substring(0, 10);
+  }
+  return cellForShort;
+}
+export function getCellEditor(cell: string) {
+  // split on | return the second part
+  let editorForShort = cell.split("|")[1];
+  if (editorForShort.length >= 15) { 
+    editorForShort = editorForShort.substring(0, 15) + '...';
+  }
+  return editorForShort;
+}
 
 function SheetComponent({ cellsValues, onClick, currentCell, currentlyEditing }: SheetComponentProps) {
 
@@ -43,21 +57,6 @@ function SheetComponent({ cellsValues, onClick, currentCell, currentlyEditing }:
       return "cell-selected";
     }
     return "cell";
-  }
-
-  // T
-
-  function getCellValue(cell: string) {
-    // split on | return the first part
-    return cell.split("|")[0];
-  }
-  function getCellEditor(cell: string) {
-    // split on | return the second part
-    let editorForShort = cell.split("|")[1];
-    if (editorForShort.length >= 15) { 
-      editorForShort = editorForShort.substring(0, 15) + '...';
-    }
-    return editorForShort;
   }
 
   return (
