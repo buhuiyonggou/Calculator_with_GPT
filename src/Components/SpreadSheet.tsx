@@ -3,6 +3,7 @@ import Formula from "./Formula";
 import Status from "./Status";
 import KeyPad from "./KeyPad";
 import Chat from './Chat';
+import ChatGPTChat from './ChatGPTChat';
 import SpreadSheetClient from "../Engine/SpreadSheetClient";
 import SheetHolder from "./SheetHolder";
 
@@ -202,6 +203,10 @@ function SpreadSheet({ documentName, spreadSheetClient }: SpreadSheetProps) {
         onCommandButtonClick={onCommandButtonClick}
         currentlyEditing={currentlyEditing}></KeyPad>
       <ServerSelector serverSelector={serverSelector} serverSelected={serverSelected} />
+      <ChatGPTChat
+        userName={userName}
+        documentName={documentName}
+      />
       <Chat
         userName={userName}
         documentName={documentName}
