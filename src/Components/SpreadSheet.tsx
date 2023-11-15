@@ -206,6 +206,7 @@ function SpreadSheet({ documentName, spreadSheetClient }: SpreadSheetProps) {
       <ChatGPTChat
         userName={userName}
         documentName={documentName}
+        baseURL={spreadSheetClient.baseURL}
       />
       <Chat
         userName={userName}

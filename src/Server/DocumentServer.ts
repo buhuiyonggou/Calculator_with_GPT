@@ -31,6 +31,7 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import { DocumentHolder } from '../Engine/DocumentHolder';
 import { ChatManager } from '../Engine/ChatManager';
+import { ChatGPTManager } from '../Engine/ChatGPTManager';
 import { PortsGlobal } from '../ServerDataDefinitions';
 
 // define a debug flag to turn on debugging
@@ -297,6 +298,23 @@ app.post('/chat/:documentName', (req, res) => {
 
     chatManager.addMessage(documentName, user, message);
     res.status(200).send('Message added successfully');
+});
+
+const chatGPTManager = new ChatGPTManager();
+
+app.post('/chatgpt/:documentName', (req, res) => {
+  const documentName = req.params.documentName;
+  const messages = req.body;
+
+  chatGPTManager.addMessages(documentName, messages);
+  res.status(200).send('Messages added successfully');
+});
+
+app.get('/chatgpt/:documentName', (req, res) => {
+  const documentName = req.params.documentName;
+
+  const messages = chatGPTManager.getMessages(documentName);
+  res.json(messages);
 });
 
 // get the port we should be using
