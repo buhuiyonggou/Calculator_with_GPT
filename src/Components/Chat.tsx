@@ -104,8 +104,17 @@ const Chat: React.FC<ChatProps> = ({ userName, documentName, baseURL }) => {
     setPage(0);
   };
 
+  const exitChatWindows = () => {
+    document.getElementById("chatwindow")!.style.display = "none";
+  };
+    
+
   return (
-    <div className="chat-container">
+    <div className="chat-container" id="chatwindow">
+      <div className="chat-bar">
+        <button onClick={exitChatWindows}>X</button>
+        ChatRoom
+        </div>
       <button onClick={loadMoreMessages} disabled={!hasMore}>
         {hasMore ? 'Load More Messages' : 'No More Messages'}
       </button>
@@ -116,9 +125,22 @@ const Chat: React.FC<ChatProps> = ({ userName, documentName, baseURL }) => {
       )}
       <div className="chat-messages">
         {messages.map((msg, index) => (
-          <div key={index} className={msg.user === userName ? 'my-message' : 'other-message'}>
-            <strong>{msg.user}:</strong> {msg.message}
+          msg.user === userName ?
+          <div className="my-messages">
+            <div className="user-avatar">{msg.user[0]}</div>
+            <div className="my-message-bubble">
+              {msg.message}
+            </div>
           </div>
+          : <div className="other-messages">
+            <div className="user-avatar">{msg.user[0]}</div>
+            <div className="other-message-bubble">
+              {msg.message}
+            </div>
+          </div>
+          // <div key={index} className={msg.user === userName ? 'my-message' : 'other-message'}>
+          //   <strong>{msg.user}:</strong> {msg.message}
+          // </div>
         ))}
       </div>
       <div className="chat-input">

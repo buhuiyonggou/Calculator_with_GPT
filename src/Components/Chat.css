@@ -1,8 +1,12 @@
 .chat-container {
-    width: 1000px;
-    height: 400px;
-    border: 2px solid #ccc;
-    display: flex;
+    background-color: whitesmoke;
+    position: fixed;
+    right: 25px;
+    top: 0px;
+    width: 400px;
+    height: 600px;
+    border: 2px solid black;
+    display: none;
     flex-direction: column;
     justify-content: space-between;
     font-size: 20px;
@@ -16,18 +20,51 @@
 
 .chat-messages {
     overflow-y: auto;
+    word-wrap: break-word;
     padding: 10px;
     flex-grow: 1;
+    color: white;
 }
 
-.my-message {
+.other-messages{
+    display: flex;
     margin-bottom: 10px;
-    text-align: right;
 }
 
-.other-message {
+.my-messages{
+    display: flex;
     margin-bottom: 10px;
+    flex-direction: row-reverse;
+}
+
+
+.user-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    /* background-image: url("https://cdn.oaistatic.com/_next/static/media/favicon-32x32.be48395e.png"); */
+    background-color: black;
+    margin-right: 10px;
+    text-align: center;
+    padding: 2px;
+    color:white;
+}
+
+ .other-message-bubble {
     text-align: left;
+    border-radius: 30px;
+    background-color: #514caf;
+    padding:10px;
+    max-width: 70%;
+}
+
+.my-message-bubble {
+    text-align: left;
+    border-radius: 30px;
+    background-color: #512426;
+    padding:10px;
+    max-width: 70%;
+    margin-right:10px;
 }
 
 .chat-input {
@@ -41,4 +78,14 @@
 
 .chat-input button {
     padding: 5px 10px;
+}
+
+.chat-bar {
+    display: flex;
+    padding: 5px;
+    background-color: #514caf;
+}
+
+.chat-bar button {
+    margin-right: 120px;
 }
