@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import './Chat.css';
+import './ChatGPTChat.css';
 
 const OPENAI_URL = 'https://api.openai.com/v1/chat/completions';
 const API_KEY = process.env.REACT_APP_API_KEY;
@@ -110,16 +110,34 @@ const ChatGPTChat: React.FC<ChatGPTChatProps> = ({ userName, documentName, baseU
     setNewMessage('');
   };
 
+  const exitChatGPTWindows = () => {
+    document.getElementById("chatgptwindow")!.style.display = "none";
+  };
+
   return (
-    <div className="chat-container">
-      <div className="chat-messages">
-        {messages.map((msg, index) => (
-          <div key={index} className={msg.role === "user" ? 'my-message' : 'other-message'}>
-            <strong>{msg.role === "user" ? 'Anonymous' : 'ChatGPT'}:</strong> {msg.content}
+    <div className="chatgpt-container" id="chatgptwindow">
+      <div className="chatgpt-bar">
+        <button onClick={exitChatGPTWindows}>X</button>
+      </div>
+      <div className="chatgpt-messages">
+      {messages.map((msg, index) => (
+          msg.role === "user" ?
+          <div className="chatgpt-my-messages">
+            <div className="chatgpt-user-avatar"></div>
+            <div className="chatgpt-my-message-bubble">
+              {msg.content}
+            </div>
+          </div>
+          : 
+          <div className="chatgpt-other-messages">
+            <div className="chatgpt-gpt-avatar"></div>
+            <div className="chatgpt-other-message-bubble">
+              {msg.content}
+            </div>
           </div>
         ))}
       </div>
-      <div className="chat-input">
+      <div className="chatgpt-input">
         <input
           type="text"
           value={newMessage}
