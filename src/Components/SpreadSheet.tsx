@@ -6,6 +6,7 @@ import Chat from './Chat';
 import ChatGPTChat from './ChatGPTChat';
 import SpreadSheetClient from "../Engine/SpreadSheetClient";
 import SheetHolder from "./SheetHolder";
+import Navbar from "./navbar"
 
 import { ButtonNames } from "../Engine/GlobalDefinitions";
 import ServerSelector from "./ServerSelector";
@@ -191,8 +192,8 @@ function SpreadSheet({ documentName, spreadSheetClient }: SpreadSheetProps) {
 
   return (
     <div>
+      <Navbar returnLoginPage={returnToLoginPage} />
       <Status statusString={statusString} userName={userName}></Status>
-      <button onClick={returnToLoginPage}>Return to Login Page</button>
       <Formula formulaString={formulaString} resultString={resultString}  ></Formula>
 
       {<SheetHolder cellsValues={cells}
