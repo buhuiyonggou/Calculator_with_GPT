@@ -14,18 +14,21 @@ type FormulaProps = {
 const Formula: React.FC<FormulaProps> = ({ formulaString, resultString }) => {
   return (
     <div>
-      <span className="formula-title" data-testid="FormulaTitle">Formula:</span>
-
-      <div className="formula">
+      <table className="formula-table">
+        <tr>
+          <td><span className="formula-title" data-testid="FormulaTitle">Formula</span></td>
+          <td><div className="formula">
          {/* make formula scrollable */}
         <span data-testid="FormulaValue">{formulaString} </span>
-      </div>
-      <br />
-      <span className="formula-title" data-testid="Result">Result:</span>
-
-      <div className="formula">
+      </div></td>
+        </tr>
+        <tr>
+          <td><span className="formula-title" data-testid="Result">Result</span></td>
+          <td> <div className="formula">
         <span data-testid="FormulaResult">{resultString}</span>
-      </div>
+      </div> </td>
+        </tr>
+      </table>
     </div>
 
   );
