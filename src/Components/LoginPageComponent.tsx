@@ -20,7 +20,6 @@ interface LoginPageProps {
 function LoginPageComponent({ spreadSheetClient }: LoginPageProps): JSX.Element {
   const [userName, setUserName] = useState(window.sessionStorage.getItem('userName') || "");
   const [documents, setDocuments] = useState<string[]>([]);
-
   // SpreadSheetClient is fetching the documents from the server so we should
   // check every 1/20 of a second to see if the documents have been fetched
   useEffect(() => {
@@ -43,6 +42,14 @@ function LoginPageComponent({ spreadSheetClient }: LoginPageProps): JSX.Element 
           if (event.key === 'Enter') {
             // get the text from the input
             let userName = (event.target as HTMLInputElement).value;
+            if (userName.length>20) {
+              alert("User name must be less than 20 characters");
+              return;
+            }
+            if (userName === "") {
+              alert("Please enter a user name");
+              return;
+            }
             window.sessionStorage.setItem('userName', userName);
             // set the user name
             setUserName(userName);
@@ -53,13 +60,6 @@ function LoginPageComponent({ spreadSheetClient }: LoginPageProps): JSX.Element 
 
   }
 
-  function checkUserName(): boolean {
-    if (userName === "") {
-      alert("Please enter a user name");
-      return false;
-    }
-    return true;
-  }
   function loadDocument(documentName: string) {
     // set the document name
     spreadSheetClient.documentName = documentName;
@@ -87,43 +87,63 @@ function LoginPageComponent({ spreadSheetClient }: LoginPageProps): JSX.Element 
   function buildFileSelector() {
     if (userName === "") {
       return <div>
-        <h4>Please enter a user name</h4>
-        <br />
-        You must be logged in to<br />
-        access the documents!
+        <div className="login-message"> 
+          You must be logged in to access the documents!
+        </div>
+        
       </div>;
     }
 
     const sheets: string[] = spreadSheetClient.getSheets();
     // make a table with the list of sheets and a button beside each one to edit the sheet
+    //return only div document name+ edit button
     return <div>
-      <table>
-        <thead>
-          <tr className="selector-title">
-            <th>Document Name---</th>
-            <th>Actions</th>
+      <h3 className='selector-title'>
+        Documents</h3>
+      <div className='documentsContainer'>
+      {sheets.map((sheet) => {
+        return <div className="document" onClick={() => loadDocument(sheet)}>
 
-          </tr>
-        </thead>
-        <tbody>
-          {sheets.map((sheet) => {
-            return <tr className="selector-item">
-              <td >{sheet}</td>
-              <td><button onClick={() => loadDocument(sheet)}>
-                Edit
-              </button></td>
-            </tr>
+              {sheet}
+
+            </div>
           })}
-        </tbody>
-      </table>
-    </div >
+        </div>
+    </div>
+    
+    
+    
+
+    // return <div className='table-container'>
+    //   <table className='flex-table'>
+    //     <thead>
+    //       <tr className="selector-title">
+    //         <th>Document Name---</th>
+    //         <th>Actions</th>
+
+    //       </tr>
+    //     </thead>
+    //     <tbody>
+    //       {sheets.map((sheet) => {
+    //         return <tr className="selector-item">
+    //           <td >{sheet}</td>
+    //           <td><button onClick={() => loadDocument(sheet)}>
+    //             Edit
+    //           </button></td>
+    //         </tr>
+    //       })}
+    //     </tbody>
+    //   </table>
+    // </div >
   }
 
   function getLoginPanel() {
     return <div>
-      <h5 >Login Page</h5>
-      {getUserLogin()}
-      <button onClick={() => logout()}>Logout</button>
+      <h1>Spreadsheet Calculator</h1>
+      <h2>Login Page</h2>
+      {userName === "" ? getUserLogin(): <div className="welcome-message">Welcome {userName}!</div>}
+      {userName === "" ? <div></div> : <button className='logout' onClick={() => logout()}>Logout</button>
+      }
     </div>
   }
 
@@ -136,8 +156,6 @@ function LoginPageComponent({ spreadSheetClient }: LoginPageProps): JSX.Element 
         <tr>
           <td>
             {getLoginPanel()}
-          </td>
-          <td>
             {buildFileSelector()}
           </td>
         </tr>

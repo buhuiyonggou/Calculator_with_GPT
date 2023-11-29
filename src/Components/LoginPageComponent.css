@@ -11,3 +11,150 @@
     font-weight: bold;
     color: #1ab31a;
 }
+
+/* #login message */
+.login-message {
+    font-family: helvetica;
+    font-weight: bold;
+    color: rgb(237, 124, 102);
+}
+
+
+/* General styles */
+.LoginPageComponent {
+  width:600px;
+  border: solid 5px;
+  padding: 5%; 
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: #000000;
+  height: auto;
+  /* make the component round corners */
+  border-radius: 50px;
+  /* make the component gradient */
+  border-color: wheat;
+  
+}
+
+input[type='text'] {
+  width: 250px;
+  padding: 10px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.logout {
+
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: #910a11;
+  color: white;
+  font-size: 16px;
+  margin: 10px;
+}
+
+.logout:hover {
+  background-color: #b30c0e;
+}
+
+.selector-title {
+  font-family: helvetica;
+  font-size: 18px;
+  font-weight: bold;
+  color: #f3f7f3;
+  background-color: #1ab31a;
+  padding: 10px;
+}
+
+.selector-item {
+  font-family: helvetica;
+  font-size: 16px;
+  font-weight: bold;
+  color: #1ab31a;
+}
+
+.selector-item td {
+  padding: 10px;
+}
+
+.login-message {
+  padding-top: 10px;
+  font-family: helvetica;
+  color: #ed7c66;
+  text-align: center;
+  font-size: 16px;
+}
+.Login-header {
+  font-family: helvetica;
+  font-weight: bold;
+  color: #f3f7f3;
+  text-align: center;
+  font-size: 24px;
+  margin-bottom: 20px;
+  background-color: #f0e7e7;
+}
+
+.welcome-message {
+  font-family: helvetica;
+  font-weight: bold;
+  color: #ed7c66;
+  text-align: center;
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+.documentsContainer{
+    display: flex;
+
+   
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #000000;
+    height: auto;
+    /* make the component round corners */
+    border-radius: 50px;
+    /* make the component gradient */
+    border-color: wheat;
+    
+}
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+  }
+
+.documentsContainer{
+    justify-self: center;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    flex-wrap: wrap;
+    flex: 1;
+    padding: 5px;
+}
+.document {
+    background-color: rebeccapurple;
+    width: 100px;
+    height: 10%;
+    margin: 5px;
+    padding: 5px;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: 0.3s;
+    font-size: small;
+}
+.document:hover {
+    background-color: purple;
+    color: white;
+}
