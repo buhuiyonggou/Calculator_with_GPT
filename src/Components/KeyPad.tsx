@@ -223,7 +223,7 @@ function KeyPad({ onButtonClick, onCommandButtonClick, currentlyEditing }: KeyPa
           dataTestId="asin-button"
         />
         <Button
-          text={"cuberoot"}
+          text={"cbrt"}
           isDigit={false}
           onClick={onButtonClick}
           className="button-operator"

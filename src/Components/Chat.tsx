@@ -128,14 +128,20 @@ const Chat: React.FC<ChatProps> = ({ userName, documentName, baseURL }) => {
           msg.user === userName ?
           <div className="my-messages">
             <div className="user-avatar">{msg.user[0]}</div>
-            <div className="my-message-bubble">
-              {msg.message}
+            <div className="my-messages-block">
+              <div className='user-name'>{msg.user}</div>
+              <div className="my-message-bubble">
+                {msg.message}
+              </div>
             </div>
           </div>
           : <div className="other-messages">
             <div className="user-avatar">{msg.user[0]}</div>
-            <div className="other-message-bubble">
-              {msg.message}
+            <div className="other-messages-block">
+              <div className='user-name'>{msg.user}</div>
+              <div className="other-message-bubble">
+                {msg.message}
+              </div>
             </div>
           </div>
           // <div key={index} className={msg.user === userName ? 'my-message' : 'other-message'}>

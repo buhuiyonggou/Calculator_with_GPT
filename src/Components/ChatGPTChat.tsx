@@ -118,12 +118,14 @@ const ChatGPTChat: React.FC<ChatGPTChatProps> = ({ userName, documentName, baseU
     <div className="chatgpt-container" id="chatgptwindow">
       <div className="chatgpt-bar">
         <button onClick={exitChatGPTWindows}>X</button>
+        Ask ChatGPT
       </div>
       <div className="chatgpt-messages">
       {messages.map((msg, index) => (
           msg.role === "user" ?
           <div className="chatgpt-my-messages">
-            <div className="chatgpt-user-avatar"></div>
+            <div className="chatgpt-user-avatar">
+            </div>
             <div className="chatgpt-my-message-bubble">
               {msg.content}
             </div>

@@ -10,6 +10,7 @@ import Navbar from "./navbar"
 
 import { ButtonNames } from "../Engine/GlobalDefinitions";
 import ServerSelector from "./ServerSelector";
+import "./SpreadSheet.css";
 
 
 interface SpreadSheetProps {
@@ -191,19 +192,21 @@ function SpreadSheet({ documentName, spreadSheetClient }: SpreadSheetProps) {
   }
 
   return (
-    <div>
-      <Navbar returnLoginPage={returnToLoginPage} />
+    <div className="spreadsheet-container">
+      <Navbar returnLoginPage={returnToLoginPage} serverSelector={serverSelector} serverSelected={serverSelected}/>
       <Status statusString={statusString} userName={userName}></Status>
       <Formula formulaString={formulaString} resultString={resultString}  ></Formula>
+      <br />
 
       {<SheetHolder cellsValues={cells}
         onClick={onCellClick}
         currentCell={currentCell}
         currentlyEditing={currentlyEditing} ></SheetHolder>}
+      <br />
       <KeyPad onButtonClick={onButtonClick}
         onCommandButtonClick={onCommandButtonClick}
         currentlyEditing={currentlyEditing}></KeyPad>
-      <ServerSelector serverSelector={serverSelector} serverSelected={serverSelected} />
+      {/* <ServerSelector serverSelector={serverSelector} serverSelected={serverSelected} /> */}
       <ChatGPTChat
         userName={userName}
         documentName={documentName}

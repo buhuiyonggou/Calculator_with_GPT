@@ -9,10 +9,14 @@
   font-size: large;
   width: 80px;
   height: 60px;
+  border-radius: 5px;
+}
+.button-number:hover {
+  background-color: #665fde;
 }
 
 .button-operator {
-  background-color: #512426;
+  background-color: #ED7D31;
   border: 5px solid #000000;
   color: white;
   padding: 5px 5px;
@@ -22,6 +26,10 @@
   font-size: large;
   width: 80px;
   height: 60px;
+}
+
+.button-operator:hover {
+  background-color: #f19e6e;
 }
 
 .button-edit-end {
@@ -37,6 +45,10 @@
   height: 60px;
 }
 
+.button-edit-end:hover {
+  background-color: #a0a0a0;
+}
+
 .button-edit-start {
   background-color: #707070;
   border: 5px solid #000000;
@@ -48,6 +60,10 @@
   font-size: large;
   width: 80px;
   height: 60px;
+}
+
+.button-edit-start:hover {
+  background-color: #a0a0a0;
 }
 
 .button-control {
@@ -62,4 +78,8 @@
 
   width: 80px;
   height: 60px;
+}
+
+.button-control:hover {
+  background-color: #202020;
 }

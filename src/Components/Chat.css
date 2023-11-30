@@ -20,10 +20,9 @@
 
 .chat-messages {
     overflow-y: auto;
-    word-wrap: break-word;
     padding: 10px;
     flex-grow: 1;
-    color: white;
+    color:black
 }
 
 .other-messages{
@@ -42,9 +41,7 @@
     width: 30px;
     height: 30px;
     border-radius: 50%;
-    /* background-image: url("https://cdn.oaistatic.com/_next/static/media/favicon-32x32.be48395e.png"); */
-    background-color: black;
-    margin-right: 10px;
+    background-color: #ED7D31;
     text-align: center;
     padding: 2px;
     color:white;
@@ -53,18 +50,19 @@
  .other-message-bubble {
     text-align: left;
     border-radius: 30px;
-    background-color: #514caf;
+    background-color: #707070;
     padding:10px;
-    max-width: 70%;
+    color: white;
+    max-width: 250px;
 }
 
 .my-message-bubble {
     text-align: left;
     border-radius: 30px;
-    background-color: #512426;
+    background-color: #665fde;
     padding:10px;
-    max-width: 70%;
-    margin-right:10px;
+    color: white;
+    max-width: 250px;
 }
 
 .chat-input {
@@ -88,4 +86,23 @@
 
 .chat-bar button {
     margin-right: 120px;
+}
+
+.user-name {
+    font-size: 14px;
+    margin-bottom:5px;
+}
+
+.other-messages-block{
+    display: flex;
+    flex-direction: column; 
+    align-items: flex-start; 
+    margin-left:10px;
+}
+
+.my-messages-block{
+    display: flex;
+    flex-direction: column; 
+    align-items: flex-end;
+    margin-right:10px; 
 }
