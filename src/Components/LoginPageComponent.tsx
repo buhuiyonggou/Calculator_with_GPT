@@ -34,7 +34,7 @@ function LoginPageComponent({ spreadSheetClient }: LoginPageProps): JSX.Element 
 
   function getUserLogin() {
     return <div>
-      <input
+      <input className = "login-input"
         type="text"
         placeholder="User name"
         defaultValue={userName}
