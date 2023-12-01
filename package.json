@@ -3,8 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@testing-library/jest-dom": "^5.16.5",
-    "@testing-library/react": "^13.4.0",
+    "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/user-event": "^13.5.0",
     "@types/jest": "^27.5.2",
     "@types/react": "^18.2.9",
@@ -57,16 +56,20 @@
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
-    "@babel/preset-env": "^7.23.3",
+    "@babel/preset-env": "^7.23.5",
     "@babel/preset-react": "^7.23.3",
+    "@testing-library/react": "^14.1.2",
     "@types/axios": "^0.14.0",
     "@types/cors": "^2.8.13",
     "@types/node": "^20.3.1",
+    "@types/supertest": "^2.0.16",
     "@types/uuid": "^9.0.2",
     "axios": "^1.4.0",
     "babel-jest": "^29.7.0",
     "jest": "^29.7.0",
     "react-memory-stats": "^0.2.0",
+    "react-test-renderer": "^18.2.0",
+    "supertest": "^6.3.3",
     "ts-jest": "^29.1.0",
     "uuid": "^9.0.0"
   }

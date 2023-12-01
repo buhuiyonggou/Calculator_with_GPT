@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import './Chat.css';
+import React, { useState, useEffect } from "react";
+import "./Chat.css";
 
 interface ChatProps {
   userName: string;
-  documentName: string;  // Used to identify the chat room
+  documentName: string; // Used to identify the chat room
   baseURL: string;
 }
 
@@ -14,7 +14,7 @@ interface Message {
 
 const Chat: React.FC<ChatProps> = ({ userName, documentName, baseURL }) => {
   const [messages, setMessages] = useState<Message[]>([]);
-  const [newMessage, setNewMessage] = useState('');
+  const [newMessage, setNewMessage] = useState("");
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const [isFetchingMore, setIsFetchingMore] = useState(false);
@@ -22,21 +22,26 @@ const Chat: React.FC<ChatProps> = ({ userName, documentName, baseURL }) => {
   // Fetch messages from the server
   const fetchMessages = async (newPage: number) => {
     try {
-      const response = await fetch(`${baseURL}/chat/${documentName}?page=${newPage}&pageSize=20`);
+      const response = await fetch(
+        `${baseURL}/chat/${documentName}?page=${newPage}&pageSize=20`
+      );
       if (response.ok) {
         const fetchedMessages = await response.json();
         if (newPage === 0) {
           setMessages(fetchedMessages.reverse());
         } else {
           // Insert new messages at the beginning of the current message list, keeping them in reverse order (i.e., newest at the top)
-          setMessages(prevMessages => [...[...fetchedMessages].reverse(), ...prevMessages]);
+          setMessages((prevMessages) => [
+            ...[...fetchedMessages].reverse(),
+            ...prevMessages,
+          ]);
         }
         return fetchedMessages;
       } else {
-        console.error('Failed to fetch messages');
+        console.error("Failed to fetch messages");
       }
     } catch (error) {
-      console.error('Error fetching messages:', error);
+      console.error("Error fetching messages:", error);
     }
     return []; // Return an empty array in case of an error
   };
@@ -61,22 +66,22 @@ const Chat: React.FC<ChatProps> = ({ userName, documentName, baseURL }) => {
 
     try {
       const response = await fetch(`${baseURL}/chat/${documentName}`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ user: userName, message: newMessage }),
       });
 
       if (response.ok) {
-        setNewMessage('');
+        setNewMessage("");
         setPage(0);
         fetchMessages(0);
       } else {
-        console.error('Failed to send message');
+        console.error("Failed to send message");
       }
     } catch (error) {
-      console.error('Error sending message:', error);
+      console.error("Error sending message:", error);
     }
   };
 
@@ -107,47 +112,42 @@ const Chat: React.FC<ChatProps> = ({ userName, documentName, baseURL }) => {
   const exitChatWindows = () => {
     document.getElementById("chatwindow")!.style.display = "none";
   };
-    
 
   return (
     <div className="chat-container" id="chatwindow">
       <div className="chat-bar">
         <button onClick={exitChatWindows}>X</button>
         ChatRoom
-        </div>
+      </div>
       <button onClick={loadMoreMessages} disabled={!hasMore}>
-        {hasMore ? 'Load More Messages' : 'No More Messages'}
+        {hasMore ? "Load More Messages" : "No More Messages"}
       </button>
       {isFetchingMore && (
-        <button onClick={exitLoadMoreMode}>
-          Exit Load More Mode
-        </button>
+        <button onClick={exitLoadMoreMode}>Exit Load More Mode</button>
       )}
       <div className="chat-messages">
-        {messages.map((msg, index) => (
-          msg.user === userName ?
-          <div className="my-messages">
-            <div className="user-avatar">{msg.user[0]}</div>
-            <div className="my-messages-block">
-              <div className='user-name'>{msg.user}</div>
-              <div className="my-message-bubble">
-                {msg.message}
+        {messages.map((msg, index) =>
+          msg.user === userName ? (
+            <div className="my-messages">
+              <div className="user-avatar">{msg.user[0]}</div>
+              <div className="my-messages-block">
+                <div className="user-name">{msg.user}</div>
+                <div className="my-message-bubble">{msg.message}</div>
               </div>
             </div>
-          </div>
-          : <div className="other-messages">
-            <div className="user-avatar">{msg.user[0]}</div>
-            <div className="other-messages-block">
-              <div className='user-name'>{msg.user}</div>
-              <div className="other-message-bubble">
-                {msg.message}
+          ) : (
+            <div className="other-messages">
+              <div className="user-avatar">{msg.user[0]}</div>
+              <div className="other-messages-block">
+                <div className="user-name">{msg.user}</div>
+                <div className="other-message-bubble">{msg.message}</div>
               </div>
             </div>
-          </div>
+          )
           // <div key={index} className={msg.user === userName ? 'my-message' : 'other-message'}>
           //   <strong>{msg.user}:</strong> {msg.message}
           // </div>
-        ))}
+        )}
       </div>
       <div className="chat-input">
         <input
