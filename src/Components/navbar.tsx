@@ -1,7 +1,5 @@
 import React from "react";
 import "./navbar.css";
-import SpreadSheetClient from "../Engine/SpreadSheetClient";
-import SpreadSheet from "./SpreadSheet";
 
 interface NavbarProps {
   returnLoginPage: () => void;
