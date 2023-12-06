@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import './ChatGPTChat.css';
+import React, { useState, useEffect } from "react";
+import "./ChatGPTChat.css";
 
-const OPENAI_URL = 'https://api.openai.com/v1/chat/completions';
+const OPENAI_URL = "https://api.openai.com/v1/chat/completions";
 const API_KEY = process.env.REACT_APP_API_KEY;
 
 interface ChatGPTChatProps {
@@ -15,13 +15,16 @@ interface ChatGPTMessage {
   content: string;
 }
 
-const ChatGPTChat: React.FC<ChatGPTChatProps> = ({ userName, documentName, baseURL }) => {
+const ChatGPTChat: React.FC<ChatGPTChatProps> = ({
+  userName,
+  documentName,
+  baseURL,
+}) => {
   const [messages, setMessages] = useState<ChatGPTMessage[]>([]);
-  const [newMessage, setNewMessage] = useState('');
+  const [newMessage, setNewMessage] = useState("");
   const [isWaitingForReply, setIsWaitingForReply] = useState(false);
 
   useEffect(() => {
-    console.log("Component mounted or documentName changed, fetching messages");
     fetchMessagesFromBackend();
   }, [documentName]);
 
@@ -33,10 +36,10 @@ const ChatGPTChat: React.FC<ChatGPTChatProps> = ({ userName, documentName, baseU
         console.log("Fetched messages from backend:", fetchedMessages);
         setMessages(fetchedMessages);
       } else {
-        console.error('Failed to fetch messages');
+        console.error("Failed to fetch messages");
       }
     } catch (error) {
-      console.error('Error fetching messages:', error);
+      console.error("Error fetching messages:", error);
     }
   };
 
@@ -44,17 +47,16 @@ const ChatGPTChat: React.FC<ChatGPTChatProps> = ({ userName, documentName, baseU
     console.log("Sending message to backend:", message);
     try {
       await fetch(`${baseURL}/chatgpt/${documentName}`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify([message]), // 将单个消息作为数组发送
+        body: JSON.stringify([message]), // Send a list of messages
       });
     } catch (error) {
-      console.error('Error sending message to backend:', error);
+      console.error("Error sending message to backend:", error);
     }
-};
-
+  };
 
   const sendMessageToChatGPT = async (message: string) => {
     console.log("Sending message to GPT:", message);
@@ -63,17 +65,17 @@ const ChatGPTChat: React.FC<ChatGPTChatProps> = ({ userName, documentName, baseU
 
     try {
       const response = await fetch(OPENAI_URL, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Authorization': `Bearer ${API_KEY}`,
-          'Content-Type': 'application/json',
+          Authorization: `Bearer ${API_KEY}`,
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           model: "gpt-4-1106-preview",
           temperature: 0.8,
           max_tokens: 2000,
-          messages: [...messages, userMessage]
-        })
+          messages: [...messages, userMessage],
+        }),
       });
 
       if (!response.ok) {
@@ -91,10 +93,13 @@ const ChatGPTChat: React.FC<ChatGPTChatProps> = ({ userName, documentName, baseU
         return;
       }
 
-      const chatGPTMessage = { role: "system", content: data.choices[0].message.content };
+      const chatGPTMessage = {
+        role: "system",
+        content: data.choices[0].message.content,
+      };
       setMessages([...messages, userMessage, chatGPTMessage]);
 
-      // 分别发送用户消息和GPT的回复
+      // Send messages to backend
       await sendMessagesToBackend(userMessage);
       await sendMessagesToBackend(chatGPTMessage);
     } catch (error) {
@@ -102,12 +107,12 @@ const ChatGPTChat: React.FC<ChatGPTChatProps> = ({ userName, documentName, baseU
     } finally {
       setIsWaitingForReply(false);
     }
-};
+  };
 
   const handleSendMessage = async () => {
     if (!newMessage.trim()) return;
     await sendMessageToChatGPT(newMessage);
-    setNewMessage('');
+    setNewMessage("");
   };
 
   const exitChatGPTWindows = () => {
@@ -121,23 +126,19 @@ const ChatGPTChat: React.FC<ChatGPTChatProps> = ({ userName, documentName, baseU
         Ask ChatGPT
       </div>
       <div className="chatgpt-messages">
-      {messages.map((msg, index) => (
-          msg.role === "user" ?
-          <div className="chatgpt-my-messages">
-            <div className="chatgpt-user-avatar">
+        {messages.map((msg, index) =>
+          msg.role === "user" ? (
+            <div className="chatgpt-my-messages">
+              <div className="chatgpt-user-avatar"></div>
+              <div className="chatgpt-my-message-bubble">{msg.content}</div>
             </div>
-            <div className="chatgpt-my-message-bubble">
-              {msg.content}
+          ) : (
+            <div className="chatgpt-other-messages">
+              <div className="chatgpt-gpt-avatar"></div>
+              <div className="chatgpt-other-message-bubble">{msg.content}</div>
             </div>
-          </div>
-          : 
-          <div className="chatgpt-other-messages">
-            <div className="chatgpt-gpt-avatar"></div>
-            <div className="chatgpt-other-message-bubble">
-              {msg.content}
-            </div>
-          </div>
-        ))}
+          )
+        )}
       </div>
       <div className="chatgpt-input">
         <input
@@ -148,7 +149,7 @@ const ChatGPTChat: React.FC<ChatGPTChatProps> = ({ userName, documentName, baseU
           disabled={isWaitingForReply}
         />
         <button onClick={handleSendMessage} disabled={isWaitingForReply}>
-          {isWaitingForReply ? 'Waiting...' : 'Send'}
+          {isWaitingForReply ? "Waiting..." : "Send"}
         </button>
       </div>
     </div>
